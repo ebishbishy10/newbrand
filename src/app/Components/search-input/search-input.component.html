@@ -25,26 +25,26 @@
         </div>
       </div>
       <div class="row ">
-        <div formArrayName="Flights" class="form-row">
-          <div class="form-group"  *ngFor="let item of searchFlight.get('Flights').controls| slice:0:1; let i= index;">
-            <div [formGroupName]='0'>
-              <div class="">
-                <input type="text" class="form-control" placeholder="Departing city" formControlName='departing'>
+        <div formArrayName="Flights" class="col-6 ">
+          <div  *ngFor="let item of searchFlight.get('Flights').controls| slice:0:1; let i= index;" class="container-fluid">
+            <div [formGroupName]='0' class="row">
+              <div class="col-4">
+                <input type="text" class="form-control " placeholder="Departing city" formControlName='departing'>
               </div>
-              <div class="">
+              <div class="col-4">
                 <input type="text" class="form-control" placeholder="landing city" formControlName='landing'>
               </div>
-              <div class="">
+              <div class="col-4">
                 <input type="date" class="form-control" placeholder="departingDate" formControlName='departingD'>
               </div>
             </div>
           </div>
         </div>
-        <div class="">
+        <div class="col-2">
           <input type="date" class="form-control" placeholder="returnDate"
           formControlName='returnDate'>
         </div>
-        <div class="">
+        <div class="col-2">
           <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle dropleft" type="button" id="dropdownMenu"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
