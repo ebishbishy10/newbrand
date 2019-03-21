@@ -14,6 +14,6 @@ export class AppComponent implements OnInit {
   item:SearchFlightModule =new SearchFlightModule('en','KWD','Eg','oneway',[new FlightsInfoModule('Cairo','Alex','March 15, 2019')],[1,1,2],'Economy','test',false,'all');
 
   ngOnInit (){
-    this.search.srarchFlight(this.item);
+    // this.search.srarchFlight(this.item);
   }
 }
