@@ -14,26 +14,28 @@ import { controlNameBinding } from '@angular/forms/src/directives/reactive_direc
 //all togther by adding and removing from 'Flights';
 // on submit the api should be created in the right form SearchFlightModule
 
+
 @Component({
-  selector: 'app-search-input',
-  templateUrl: './search-input.component.html',
-  styleUrls: ['./search-input.component.css']
+  selector: 'app-new-search',
+  templateUrl: './new-search.component.html',
+  styleUrls: ['./new-search.component.css']
 })
-export class SearchInputComponent implements OnInit {
+export class NewSearchComponent implements OnInit {
 //  varuables
   searchFlight:FormGroup;
 
   flight = new FormGroup({
     "departing": new FormControl(null,[Validators.required]),
     "landing": new FormControl(null,[Validators.required]),
-    "departingD": new FormControl(this.todayDate(),[Validators.required])
-  },[this.invalidFlightDis]);
+    "departingD": new FormControl(null,[Validators.required])
+  });
+  flightType:string;
+  flightTypes=['OneWay','RoundTrip','multi']
   maxinfent:number=9;
   maxnumber:number =9;
   adults:number=1;
   child:number=0;
   infent:number=0;
-  flightsnumber:number=0;  
 
   constructor() { }
 
@@ -46,7 +48,7 @@ export class SearchInputComponent implements OnInit {
       "flightType": new FormControl('OneWay',[Validators.required]),
       "Direct": new FormControl(false,[Validators.required]),
       "Flights": new FormArray([],[Validators.required]),
-      "returnDate": new FormControl(null),
+      "returnDate": new FormControl(null,[Validators.required]),
       "adults": new FormControl(0,[Validators.required,Validators.min(1),this.maxValueReached.bind(this)]),
       "child": new FormControl(0,[Validators.required,Validators.min(0),this.maxValueReached.bind(this)]),
       "infent": new FormControl(0,[Validators.required,Validators.max(this.maxinfent),Validators.min(0),this.maxValueReached.bind(this)]),
@@ -63,8 +65,7 @@ export class SearchInputComponent implements OnInit {
     this.searchFlight.get('adults').valueChanges.subscribe(
       (value) =>{this.setmaxinfentval(value)}
     )
-    
-   this.flightsnumber =this.searchFlight.get('Flights').value.length;
+
    
   }
   
@@ -75,7 +76,6 @@ export class SearchInputComponent implements OnInit {
 
 
   //one way start//
-  
   //one way end//
 
   //round trip start//
@@ -85,8 +85,8 @@ export class SearchInputComponent implements OnInit {
     const flight = new FormGroup({
       "departing": new FormControl('Departing'),
       "landing": new FormControl('landing'),
-      "departingD": new FormControl(this.todayDate())
-    },[this.invalidFlightDis]);
+      "departingD": new FormControl()
+    });
 
     this.removeArrayControllers();
 
@@ -95,8 +95,8 @@ export class SearchInputComponent implements OnInit {
     const Rflight = new FormGroup({
       "departing": new FormControl(this.searchFlight.get('Flights').value[0].landing,[Validators.required]),
       "landing": new FormControl(this.searchFlight.get('Flights').value[0].departing,[Validators.required]),
-      "departingD": new FormControl(this.searchFlight.get('returnDate').value,[])
-    },[this.invalidFlightDis]);
+      "departingD": new FormControl(this.searchFlight.get('returnDate').value,[Validators.required])
+    });
 
     (<FormArray>this.searchFlight.get("Flights")).push(Rflight);
   }
@@ -114,28 +114,19 @@ export class SearchInputComponent implements OnInit {
     if (mvalue == 'OneWay') {
 
       this.removeArrayControllers();
-      this.searchFlight.get('returnDate').setValidators(Validators.nullValidator);
-      this.searchFlight.get('returnDate').updateValueAndValidity();
 
       (<FormArray>this.searchFlight.get("Flights")).push(this.flight);
 
       return
     }
     if (mvalue == 'RoundTrip') {
-      this.searchFlight.get('returnDate').valueChanges.subscribe(
-        (value) => {console.log(this.searchFlight.get('Flights').value[1]['departingD'],value),
-        this.searchFlight.get('Flights').value[1]['departingD']=value}
-      )
+
       this.roundTripI();
-      this.searchFlight.get('returnDate').setValidators(Validators.required);
-      this.searchFlight.get('returnDate').updateValueAndValidity();
-      
+
       return
     }
 
     if (mvalue == 'Multi') {
-      this.searchFlight.get('returnDate').setValidators(Validators.nullValidator);
-      this.searchFlight.get('returnDate').updateValueAndValidity();
 
       this.removeArrayControllers();
 
@@ -168,27 +159,18 @@ export class SearchInputComponent implements OnInit {
   onAddFlight() {
 
     (<FormArray>this.searchFlight.get("Flights")).push(this.flight);
-    this.flightsnumber =this.searchFlight.get('Flights').value.length;
-    console.log(this.flightsnumber);
-  }
-  
-  maxFlights(){
-    if(this.flightsnumber>=6) {
-      return false
-    }
-    else {
-      return true
-    }
+
   }
 
+
   setmaxinfentval (value){
+    debugger
     this.maxinfent = value;
     this.searchFlight.get("infent").setValidators([Validators.max(this.maxinfent)]);
   }
   
   // to subment the form and call the search api
   onSubmit() {
-  
     console.log(this.searchFlight);
     //asign the form values to  SearchFlightModule
     // this.searchApi.Cclass = this.searchFlight.get('class').value;
@@ -199,26 +181,14 @@ export class SearchInputComponent implements OnInit {
 
   //other functions end
   //custom validators start
-   invalidFlightDis(flight:FormGroup):{[a:string]:boolean} {
-   if(flight.get("departing").value===flight.get("landing").value) {
-   return {'distenationNotValid':true};
-   }
-   return null;
-   }
 
-   todayDate() {
-    let date = new Date();
-    return date.toISOString().split('T')[0];
-  }
-
-   maxValueReached(control:FormControl): {[b:string]:boolean}
+   maxValueReached(control:FormControl): {[s:string]:Boolean}
    { 
      if(this.adults+this.child+this.infent >9){
       return {'maxReched':true};
      }
      return null;
-   }
+   } 
    
-
   //custom validators end
 }

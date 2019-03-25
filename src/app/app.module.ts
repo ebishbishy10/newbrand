@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {ReactiveFormsModule} from '@angular/forms';
+import {RouterModule, Routes} from '@angular/router'
 //angular import End //
 
 //Component Import start//
@@ -29,14 +30,20 @@ import {MatInputModule} from '@angular/material/input';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material';
 import {MatButtonModule} from '@angular/material/button';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { NewSearchComponent } from './Components/new-search/new-search.component';
 
+ const routes :Routes =[{
+   path:'',component:SearchInputComponent
+ }]
 
 //other libraries end//
 @NgModule({
   declarations: [
     AppComponent,
     SearchInputComponent,
-    SearchResultComponent
+    SearchResultComponent,
+    NewSearchComponent
   ],
   imports: [
    //angular imports
@@ -45,6 +52,7 @@ import {MatButtonModule} from '@angular/material/button';
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
+    RouterModule.forRoot(routes,{scrollPositionRestoration:'top'}),
     //other imports
     MatFormFieldModule,
     MatRadioModule,
@@ -52,7 +60,8 @@ import {MatButtonModule} from '@angular/material/button';
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatButtonModule
+    MatButtonModule,
+    MatAutocompleteModule
   ],
   providers: [MyApiService,DatePipe,MatDatepickerModule],
   bootstrap: [AppComponent]

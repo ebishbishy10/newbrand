@@ -28,21 +28,24 @@
         <div formArrayName="Flights" class="col-6 ">
           <div  *ngFor="let item of searchFlight.get('Flights').controls| slice:0:1; let i= index;" class="container-fluid">
             <div [formGroupName]='0' class="row">
-              <div class="col-4">
+              <div class="">
                 <input type="text" class="form-control " placeholder="Departing city" formControlName='departing'>
               </div>
-              <div class="col-4">
+              <div class="">
                 <input type="text" class="form-control" placeholder="landing city" formControlName='landing'>
               </div>
               <div class="col-4">
-                <input type="date" class="form-control" placeholder="departingDate" formControlName='departingD'>
+                <input type="date" class="form-control" placeholder="departingDate" formControlName='departingD'
+                [min]='todayDate()'>
               </div>
             </div>
           </div>
         </div>
         <div class="col-2">
           <input type="date" class="form-control" placeholder="returnDate"
-          formControlName='returnDate'>
+          formControlName='returnDate' [min]="searchFlight.get('Flights').controls[0].value['departingD']"
+          [value]="searchFlight.get('Flights').controls[0].value['departingD']"
+          *ngIf="searchFlight.get('flightType').value === 'RoundTrip' ">
         </div>
         <div class="col-2">
           <div class="dropdown">
@@ -54,15 +57,18 @@
               <div class="px-4 py-3">
                 <div class="form-group">
                   <label for="exampleDropdownFormEmail1">adults</label>
-                  <input type="number" class="form-control" placeholder="0" formControlName="adults">
+                  <input type="number" class="form-control" placeholder="0" formControlName="adults"
+                  [(ngModel)]="adults">
                 </div>
                 <div class="form-group">
                   <label for="exampleDropdownFormPassword1">child</label>
-                  <input type="number" class="form-control" placeholder="0" formControlName="child">
+                  <input type="number" class="form-control" placeholder="0" formControlName="child"
+                  [(ngModel)]="child">
                 </div>
                 <div class="form-group">
                   <label for="exampleDropdownFormPassword1">infent</label>
-                  <input type="number" class="form-control" placeholder="0" formControlName="infent">
+                  <input type="number" class="form-control" placeholder="0" formControlName="infent"
+                  [(ngModel)]="infent">
                 </div>
 
               </div>
@@ -81,10 +87,9 @@
 
       </div>
       <div class="row">
-        <div formArrayName="Flights" class="form-row">
-          <div class="form-group" *ngFor="let item of searchFlight.get('Flights').controls| slice:1; let i= index;">
-            <div [formGroupName]='indexadd1(i)'>
-              <p>{{i}}</p>
+        <div formArrayName="Flights" class="col-12" *ngIf="searchFlight.get('flightType').value === 'Multi' ">
+          <div class="form-group" *ngFor="let item of searchFlight.get('Flights').controls| slice:1; let i= index;"class="container-fluid">
+            <div [formGroupName]='indexadd1(i)' class="row">
               <div class="">
                 <input type="text" class="form-control" placeholder="Departing city" formControlName='departing'>
               </div>
@@ -92,14 +97,16 @@
                 <input type="text" class="form-control" placeholder="landing city" formControlName='landing'>
               </div>
               <div class="">
-                <input type="date" class="form-control" placeholder="departingDate" formControlName='departingD'>
+                <input type="date" class="form-control" placeholder="departingDate" formControlName='departingD'
+                [min]="searchFlight.get('Flights').controls[i].value['departingD']"
+                [value]="searchFlight.get('Flights').controls[i].value['departingD']">
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="row ml-auto">
+      <div class="row ml-auto" *ngIf="maxFlights() && searchFlight.get('flightType').value === 'Multi' ">
         <button type="button" class="btn btn-warning float-right" (click)='onAddFlight()'>add</button>
       </div>
 
