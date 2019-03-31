@@ -32,7 +32,11 @@ import {MatNativeDateModule} from '@angular/material';
 import {MatButtonModule} from '@angular/material/button';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { NewSearchComponent } from './Components/new-search/new-search.component';
-
+import {MatIconModule} from '@angular/material/icon';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatSelectModule} from '@angular/material/select';
+import {MatMenuModule} from '@angular/material/menu';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
  const routes :Routes =[{
    path:'',component:SearchInputComponent
  }]
@@ -61,7 +65,12 @@ import { NewSearchComponent } from './Components/new-search/new-search.component
     MatDatepickerModule,
     MatNativeDateModule,
     MatButtonModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatIconModule,
+    MatTabsModule,
+    MatSelectModule,
+    MatMenuModule,
+    NgbModule
   ],
   providers: [MyApiService,DatePipe,MatDatepickerModule],
   bootstrap: [AppComponent]

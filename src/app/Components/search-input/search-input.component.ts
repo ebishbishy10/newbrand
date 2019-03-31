@@ -112,7 +112,7 @@ export class SearchInputComponent implements OnInit {
   intial(mvalue) {
 
     if (mvalue == 'OneWay') {
-
+      setRetarnvalue.unsubscribe();
       this.removeArrayControllers();
       this.searchFlight.get('returnDate').setValidators(Validators.nullValidator);
       this.searchFlight.get('returnDate').updateValueAndValidity();
@@ -122,7 +122,7 @@ export class SearchInputComponent implements OnInit {
       return
     }
     if (mvalue == 'RoundTrip') {
-      this.searchFlight.get('returnDate').valueChanges.subscribe(
+     var setRetarnvalue= this.searchFlight.get('returnDate').valueChanges.subscribe(
         (value) => {console.log(this.searchFlight.get('Flights').value[1]['departingD'],value),
         this.searchFlight.get('Flights').value[1]['departingD']=value}
       )
@@ -134,6 +134,7 @@ export class SearchInputComponent implements OnInit {
     }
 
     if (mvalue == 'Multi') {
+      setRetarnvalue.unsubscribe();
       this.searchFlight.get('returnDate').setValidators(Validators.nullValidator);
       this.searchFlight.get('returnDate').updateValueAndValidity();
 

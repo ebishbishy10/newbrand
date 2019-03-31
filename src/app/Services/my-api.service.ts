@@ -1,11 +1,12 @@
 //angular Imports Start//
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 //angular import End //
 //Imported Module start//
 import { SearchFlightModule } from '../models/search-flight/search-flight.module';
 import { FlightsInfoModule } from '../models/flights-info/flights-info.module';
 import { FlightSearchResultModule } from '../models/flight-search-result/flight-search-result.module';
+import { CitiesModule } from '../models/cities/cities.module';
 //Imported Module send //
 @Injectable({
   providedIn: 'root'
@@ -64,5 +65,16 @@ export class MyApiService {
       FlightsInfoArray = FlightsInfoArray + fligt;
     }
     return FlightsInfoArray.slice(0, -1);
+  }
+
+  cityData(lang:string){
+   //return cities data
+   let headers = new HttpHeaders();
+   headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+   
+   let api =`http://192.168.1.91:8090/api/GetSearchFlowMapping?LangCode=${lang}`;
+   let result:any;
+   let errorOut: any;
+    return this.httpClient.get<CitiesModule[]>(api,{headers:headers}) 
   }
 }

@@ -1,0 +1,14 @@
+
+.mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+    margin-top: 16px;
+  }
+
+  .mat-checkbox {
+    margin-left: auto;
+    margin-top:18px;
+  }
+
+  mat-form-field-flex {
+    height: 40px;
+  }
