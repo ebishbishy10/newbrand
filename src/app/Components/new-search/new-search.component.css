@@ -9,6 +9,17 @@
     margin-top:18px;
   }
 
-  mat-form-field-flex {
-    height: 40px;
+
+  .mar4 {
+    margin-top: 4px;
+  }
+
+  .datepicker{
+   max-width:150px;
+  }
+  .searchbutton {
+    max-height: 48px;
+  }
+  .menue{
+    max-height: 48px;
   }

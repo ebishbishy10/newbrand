@@ -5,11 +5,14 @@ import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 // custom models imports start
 import { SearchFlightModule } from 'src/app/models/search-flight/search-flight.module';
 import { FlightsInfoModule } from 'src/app/models/flights-info/flights-info.module';
-import { controlNameBinding } from '@angular/forms/src/directives/reactive_directives/form_control_name';
 import { CitiesModule } from 'src/app/models/cities/cities.module';
 import { MyApiService } from 'src/app/Services/my-api.service';
 
 //custom models imports end
+//other imports start
+import {Observable, Subscription} from 'rxjs';
+
+//other imports end
 
 //     *** Search component ***
 // this component is setting a reactive search form
@@ -26,7 +29,7 @@ import { MyApiService } from 'src/app/Services/my-api.service';
 export class NewSearchComponent implements OnInit {
 //  varuables
 searchFlight:FormGroup;
-searchApi:SearchFlightModule;
+
 
 maxinfent:number=9;
 maxnumber:number =9;
@@ -35,10 +38,10 @@ child:number=0;
 infent:number=0;
 flightsnumber:number=0; 
 cities :CitiesModule[];
-returnlink:any;
+returnlink:Subscription;
 
 
-constructor( private myApi:MyApiService) { }
+constructor( private myApi:MyApiService) {  }
 
 ngOnInit() {
   //setting up the Form with  Defult values
@@ -122,21 +125,21 @@ roundTripI() {
 // reset the inetial value of the array when flightType is changed
 
 intial(mvalue) {
-
+ 
   if (mvalue == 'OneWay') {
 
-   
-
+    if (this.returnlink){
+      this.returnlink.unsubscribe();
+    }
     this.removeArrayControllers();
     this.searchFlight.get('returnDate').setValidators(Validators.nullValidator);
     this.searchFlight.get('returnDate').updateValueAndValidity();
-    this.returnlink.unsubscribe();
     this.onAddFlight();
 
     return
   }
   if (mvalue == 'RoundTrip') {
-     this.returnlink=this.searchFlight.get('returnDate').valueChanges.subscribe(
+      this.returnlink=this.searchFlight.get('returnDate').valueChanges.subscribe(
       (myvalue) => {
       this.searchFlight.get('Flights').get('1').get('departingD').setValue(myvalue),
       this.searchFlight.get('Flights').get('1').get('departing').setValue(this.searchFlight.get('Flights').get('0').get('landing').value),
@@ -148,20 +151,23 @@ intial(mvalue) {
     this.searchFlight.get('returnDate').setValidators(Validators.required);
     this.searchFlight.get('returnDate').updateValueAndValidity();
     
+    
     // console.log('result',this.cities);
     // console.log(this.searchFlight)
     return
   }
 
   if (mvalue == 'Multi') {
-   
+    if (this.returnlink){
+      this.returnlink.unsubscribe();
+    }
+    // this.returnlink.unsubscribe();
     this.searchFlight.get('returnDate').setValidators(Validators.nullValidator);
     this.searchFlight.get('returnDate').updateValueAndValidity();
     this.removeArrayControllers();
-    
-     this.onAddFlight();
-     this.onAddFlight();
-     this.onAddFlight();
+    this.onAddFlight();
+    this.onAddFlight();
+    this.onAddFlight();
 
 
     //  this.searchFlight.get('Flights').valueChanges.subscribe(
@@ -170,6 +176,15 @@ intial(mvalue) {
   }
   // console.log(mvalue);
 
+}
+
+// switch destenation
+switchDes(item:FormGroup) {
+  let value1 =item.get('landing').value;
+  let value2 = item.get('departing').value;
+ item.get('departing').setValue(value1);
+ item.get('landing').setValue(value2);
+ item.updateValueAndValidity();
 }
 
 //to match the formGroups name with the Flights array index
@@ -194,7 +209,7 @@ onAddFlight() {
     "departingD": new FormControl(this.todayDate(),[Validators.required])
   }));
   this.flightsnumber =this.searchFlight.get('Flights').value.length;
-  console.log(this.flightsnumber);
+  // console.log(this.flightsnumber);
 }
 // invalid flight number
 maxFlights(){
@@ -205,6 +220,18 @@ maxFlights(){
     return true
   }
 }
+bendingFlights(flights:FormArray){
+  let flightout:FlightsInfoModule[]=[];
+  for (let index = 0; index < flights.length; index++) {
+    const element:FormGroup = flights[index];
+   let flight:FlightsInfoModule;
+   flight.departingCity = element.get('departing').value;
+   flight.arrivalCity = element.get('landing').value;
+   flight.departionDate = element.get('departingD').value;
+   flightout.push(flight);
+  }
+ return flightout;
+}
 
 setmaxinfentval (value){
   this.maxinfent = value;
@@ -214,14 +241,25 @@ setmaxinfentval (value){
 // to subment the form and call the search api
 onSubmit() {
 
-  if (this.searchFlight.valid) {
-
+  if (true) {
+  let searchApi:SearchFlightModule =new SearchFlightModule ('en','KWD','Eg',this.searchFlight.get('flightType').value,
+  this.bendingFlights(this.searchFlight.get('Flights').value),
+  [this.searchFlight.get('adult').value,this.searchFlight.get('child').value,this.searchFlight.get('infent')],
+  this.searchFlight.get('class').value,'Searchid',this.searchFlight.get('Direct').value,'all' )
  // asign the form values to  SearchFlightModule
- this.searchApi.Cclass = this.searchFlight.get('class').value;
- this.searchApi.flightType=this.searchFlight.get('flightType').value;
- this.searchApi.passengers =this.searchFlight.get('adult').value;
- this.searchApi.showDirect =this.searchFlight.get('Direct').value;
- console.log(this.searchFlight.valid,this.searchFlight);
+//  this.searchApi.Cclass = this.searchFlight.get('class').value;
+//  this.searchApi.flightType=this.searchFlight.get('flightType').value;
+//  this.searchApi.passengers =[this.searchFlight.get('adult').value,
+//  this.searchFlight.get('child').value,
+//  this.searchFlight.get('infent')];
+//  this.searchApi.showDirect =this.searchFlight.get('Direct').value;
+//  this.searchApi.lan ='en';
+//  this.searchApi.Currency='KWD';
+//  this.searchApi.serachId='searchid';
+//  this.searchApi.pointOfReservation='Eg';
+//  this.searchApi.preferredAirLine ='all';
+//  this.searchApi.flightsInfo = this.bendingFlights(this.searchFlight.get('Flights').value);
+ console.log(this.searchFlight.valid,this.searchFlight,"api",searchApi);
  this.searchFlight.updateValueAndValidity();
  }
   else

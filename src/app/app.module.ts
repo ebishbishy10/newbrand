@@ -19,6 +19,7 @@ import { MyApiService } from './Services/my-api.service';
 //Services Import end//
 
 //pipes Import start //
+import { FilterCityPipe } from './pipes/filter-city.pipe';
 import { DatePipe } from '@angular/common';
 //pipes Import end//
 //other libraries statr //
@@ -37,6 +38,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatSelectModule} from '@angular/material/select';
 import {MatMenuModule} from '@angular/material/menu';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
  const routes :Routes =[{
    path:'',component:SearchInputComponent
  }]
@@ -47,7 +49,8 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
     AppComponent,
     SearchInputComponent,
     SearchResultComponent,
-    NewSearchComponent
+    NewSearchComponent,
+    FilterCityPipe
   ],
   imports: [
    //angular imports

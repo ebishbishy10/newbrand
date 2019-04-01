@@ -9,3 +9,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-select-value {
     color: transparent;
 }
+mat-form-field * {
+    max-height: 50px;
+  }
+
+.mat-form-field-infix {
+    border : .84375em;
+}
+
+.padding0 {
+    padding:0px;
+  }

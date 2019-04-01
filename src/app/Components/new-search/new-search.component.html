@@ -1,141 +1,152 @@
-<div class="container-fluid">
+<div class="container">
   <form [formGroup]="searchFlight" (ngSubmit)="onSubmit()">
     <div class="row">
       <mat-radio-group aria-label="Select an option" formControlName="flightType">
-        <mat-radio-button value="OneWay" class="ml-3">One Way</mat-radio-button>
+        <mat-radio-button value="OneWay" class="">One Way</mat-radio-button>
         <mat-radio-button value="RoundTrip">Round Trip</mat-radio-button>
         <mat-radio-button value="Multi">Multi Destination</mat-radio-button>
       </mat-radio-group>
       <mat-checkbox class="ml-auto" formControlName="Direct">Direct only</mat-checkbox>
     </div>
     <div class="row">
-      <div class="col-6" style="padding: 0px;" formArrayName="Flights">
-        <div class="container-fluid"
-          *ngFor="let item of searchFlight.get('Flights').controls| slice:0:1; let i= index;">
-          <div class="row" style="padding: 0px;" [formGroupName]='0'>
-            <mat-form-field class="col-lg-4" color='accent' appearance="outline">
+      <ng-container formArrayName="Flights">
+        <ng-container *ngFor="let item of searchFlight.get('Flights').controls| slice:0:1; let i= index;">
+          <ng-container [formGroupName]='0'>
+            <mat-form-field class="col-lg-2 padding0 mr-2" color='accent' appearance="outline">
               <input type="text" placeholder="Departing City" aria-label="City" matInput formControlName="departing"
                 [matAutocomplete]="autoa">
               <mat-autocomplete #autoa="matAutocomplete">
-                <mat-option *ngFor="let city of cities" [value]="city.cityName">
+                <mat-option *ngFor="let city of cities|filterCity:item.get('departing').value" [value]="city.cityName">
                   {{city.airportCode}}-{{city.airportName}}-{{city.cityName}}
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
-            <mat-form-field class="col-lg-4" color='accent' appearance="outline">
+            <div>
+              <button class="col-lg-1 mar4" type="button" (click)='switchDes(item)' style="max-width: wedth 10px;">
+                s
+              </button>
+            </div>
+            <mat-form-field class="col-lg-2 padding0 mr-2 " color='accent' appearance="outline">
               <input type="text" placeholder="Landing City" aria-label="City" matInput formControlName="landing"
                 [matAutocomplete]="autob">
               <mat-autocomplete #autob="matAutocomplete">
-                <mat-option *ngFor="let city of cities" [value]="city.cityName">
+                <mat-option *ngFor="let city of cities|filterCity:item.get('landing').value" [value]="city.cityName">
                   {{city.airportCode}}-{{city.airportName}}-{{city.cityName}}
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
-            <mat-form-field class="col-lg-3" color='accent' appearance="outline">
-              <input matInput [matDatepicker]="picker1" placeholder="Departing Date " formControlName='departingD'
+            <mat-form-field class="col-lg-2 padding0 mr-2 datepicker" color='accent' appearance="outline">
+              <input matInput [matDatepicker]="picker1" placeholder="Departing Date" formControlName='departingD'
                 [min]='todayDate()'>
               <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
               <mat-datepicker #picker1></mat-datepicker>
             </mat-form-field>
-          </div>
-        </div>
-      </div>
-      <div class="col-6" style="padding:0px;">
-        <mat-form-field class="col-lg-3" color='accent' appearance="outline"
-          *ngIf="searchFlight.get('flightType').value === 'RoundTrip' ">
-          <input matInput [matDatepicker]="picker" placeholder="Return Date " formControlName='returnDate'
-            [min]="searchFlight.get('Flights').controls[0].value['departingD']"
-            [value]="searchFlight.get('Flights').controls[0].value['departingD']">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        <div ngbDropdown class="d-inline-block">
-          <div class="col-3">
-            <div ngbDropdown class="d-inline-block" autoClose="outside">
-              <button class="btn btn-outline-warning mb-3 btn-lg" id="dropdownForm1" ngbDropdownToggle>Travellers and
-                class</button>
-              <div ngbDropdownMenu aria-labelledby="dropdownForm1" style="width:300px;">
-                <div class="px-4 py-4">
-                  <div class="form-group">
-                    <mat-form-field style="height:50px;" appearance="outline">
-                      <mat-label>adults</mat-label>
-                      <input matInput placeholder="adults" value="1" type="number" min="1" formControlName="adults">
-                    </mat-form-field>
-                  </div>
-                  <div class="form-group" appearance="outline">
-                    <mat-form-field style="height:50px;" appearance="outline">
-                      <mat-label>child</mat-label>
-                      <input matInput placeholder="child" value="0" type="number" min="0" formControlName="child">
-                    </mat-form-field>
-                  </div>
-                  <div class="form-group">
-                    <mat-form-field style="height:50px;" appearance="outline">
-                      <mat-label>Infent</mat-label>
-                      <input matInput placeholder="infent" value="0" type="number" min="0" formControlName="infent">
-                    </mat-form-field>
-                  </div>
-                </div>
-                <div class="dropdown-divider"></div>
-                <div class="form-group px-4 py-4 ">
-                  <mat-form-field>
-                    <mat-label>Class</mat-label>
-                    <select matNativeControl class="custom-select" formControlName="class">
-                      <option value="economy">
-                        Economy
-                      </option>
-                      <option value="Business">
-                        Business
-                      </option>
-                      <option value="economy">
-                        First
-                      </option>
-                    </select>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+      <mat-form-field class="col-lg-2 padding0 mr-2 datepicker" color='accent' appearance="outline"
+        *ngIf="searchFlight.get('flightType').value === 'RoundTrip' ">
+        <input matInput [matDatepicker]="picker" placeholder="Return Date " formControlName='returnDate'
+          [min]="searchFlight.get('Flights').controls[0].value['departingD']"
+          [value]="searchFlight.get('Flights').controls[0].value['departingD']">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <div ngbDropdown class="d-inline-block menue">
+        <div class="col-lg-2 padding0 mr-2 mar4 menue">
+          <div ngbDropdown class="d-inline-block" autoClose="outside">
+            <button class="btn btn-outline-warning mb-3 btn-lg" id="dropdownForm1" ngbDropdownToggle>Travellers and
+              class</button>
+            <div ngbDropdownMenu aria-labelledby="dropdownForm1" style="width:300px;">
+              <div class="px-4 py-4">
+                <div class="form-group">
+                  <mat-form-field style="height:50px;" appearance="outline">
+                    <mat-label>adults</mat-label>
+                    <input matInput placeholder="adults" value="1" type="number" min="1" formControlName="adults">
                   </mat-form-field>
                 </div>
-                <button ngbDropdownToggle color="accent" class="btn btn-warning dropdown-toggle ">done</button>
-
+                <div class="form-group" appearance="outline">
+                  <mat-form-field style="height:50px;" appearance="outline">
+                    <mat-label>child</mat-label>
+                    <input matInput placeholder="child" value="0" type="number" min="0" formControlName="child">
+                  </mat-form-field>
+                </div>
+                <div class="form-group">
+                  <mat-form-field style="height:50px;" appearance="outline">
+                    <mat-label>Infent</mat-label>
+                    <input matInput placeholder="infent" value="0" type="number" min="0" formControlName="infent">
+                  </mat-form-field>
+                </div>
               </div>
+              <div class="dropdown-divider"></div>
+              <div class="form-group px-4 py-4 ">
+                <mat-form-field>
+                  <mat-label>Class</mat-label>
+                  <select matNativeControl class="custom-select" formControlName="class">
+                    <option value="economy">
+                      Economy
+                    </option>
+                    <option value="Business">
+                      Business
+                    </option>
+                    <option value="economy">
+                      First
+                    </option>
+                  </select>
+                </mat-form-field>
+              </div>
+              <button ngbDropdownToggle color="accent" class="btn btn-warning dropdown-toggle ">done</button>
+
             </div>
           </div>
         </div>
-        <button color='accent' class="col-lg-3 btn btn-warning btn-lg float-right" type="submit">Search</button>
       </div>
+      <button color='accent' class="col-1 btn btn-warning btn-lg float-right mar4 searchbutton "
+        type="submit">Search</button>
     </div>
-    <div class="row" *ngIf="searchFlight.get('flightType').value === 'Multi' ">
-      <div formArrayName="Flights" class="col-12" *ngIf="searchFlight.get('flightType').value === 'Multi' ">
-        <div class="form-group" *ngFor="let item of searchFlight.get('Flights').controls| slice:1; let i= index;"
-          class="container-fluid">
+    <ng-container *ngIf="searchFlight.get('flightType').value === 'Multi' ">
+      <ng-container formArrayName="Flights" class="col-12" *ngIf="searchFlight.get('flightType').value === 'Multi' ">
+        <ng-container class="form-group"
+          *ngFor="let item of searchFlight.get('Flights').controls| slice:1; let i= index;">
+
           <div [formGroupName]='indexadd1(i)' class="row">
             <mat-form-field class="col-lg-4" color='accent' appearance="outline">
-              <input type="text" placeholder="departing" aria-label="City" matInput formControlName="departing"
+              <input type="text" placeholder="departing City" aria-label="City" matInput formControlName="departing"
                 [matAutocomplete]="ii">
               <mat-autocomplete #ii="matAutocomplete">
-                <mat-option *ngFor="let city of cities" [value]="city.cityName">
+                <mat-option *ngFor="let city of cities|filterCity:item.get('departing').value" [value]="city.cityName">
                   {{city.airportCode}}-{{city.airportName}}-{{city.cityName}}
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
+            <div>
+              <button class="btn btn-warning" type="button" (click)='switchDes(item)'>
+                switch
+              </button>
+            </div>
             <mat-form-field class="col-lg-4" color='accent' appearance="outline">
               <input type="text" placeholder="Landing City" aria-label="City" matInput formControlName="landing"
                 [matAutocomplete]="iii">
               <mat-autocomplete #iii="matAutocomplete">
-                <mat-option *ngFor="let city of cities" [value]="city.cityName">
+                <mat-option *ngFor="let city of cities|filterCity:item.get('landing').value" [value]="city.cityName">
                   {{city.airportCode}}-{{city.airportName}}-{{city.cityName}}
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
             <mat-form-field class="col-lg-3" color='accent' appearance="outline">
-                <input matInput [matDatepicker]="iiii" placeholder="Departing Date " formControlName='departingD'
-                  [min]='todayDate()'>
-                <mat-datepicker-toggle matSuffix [for]="iiii"></mat-datepicker-toggle>
-                <mat-datepicker #iiii></mat-datepicker>
-              </mat-form-field>
+              <input matInput [matDatepicker]="iiii" placeholder="Departing Date " formControlName='departingD'
+                [min]='todayDate()'>
+              <mat-datepicker-toggle matSuffix [for]="iiii"></mat-datepicker-toggle>
+              <mat-datepicker #iiii></mat-datepicker>
+            </mat-form-field>
           </div>
-        </div>
 
-      </div>
+        </ng-container>
 
-    </div>
+      </ng-container>
+
+    </ng-container>
+
     <div class="row ml-auto" *ngIf="maxFlights() && searchFlight.get('flightType').value === 'Multi' ">
       <button type="button" class="btn btn-warning float-right" (click)='onAddFlight()'>add</button>
     </div>
